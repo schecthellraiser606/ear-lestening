@@ -9,7 +9,7 @@ export const Router: VFC = memo(()=>{
   <Switch>
     <Route exact path="/"><Home /></Route>
     <Route path="/login"><Login /></Route>
-    <Route></Route>
+
 
     <Route path="*"><Page404/></Route>
   </Switch>

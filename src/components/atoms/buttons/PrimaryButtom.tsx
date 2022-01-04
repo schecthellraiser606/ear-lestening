@@ -13,7 +13,7 @@ export const PrimaryButton: VFC<Props> = memo( (props)=> {
 
   return( 
     <Button 
-      bg="teal.400" 
+      bg="cyan.400" 
       color="white" 
       _hover={{ opacity: 0.8}} 
       disabled= {disable || loading}
