@@ -12,8 +12,14 @@ export const InputAndSearch: VFC = memo( ()=> {
 
   return(
     <Flex justify="center">
-      <Box>
-        <Input placeholder='アーティスト or 曲名' value={word} onChange={onChangeWord}/>
+      <Box >
+        <Input 
+          borderLeftRadius={9}
+          borderRightRadius={0}
+          backgroundColor="white" 
+          placeholder='アーティスト, 曲名' 
+          value={word} 
+          onChange={onChangeWord}/>
       </Box>
       <Box>
       <PrimaryButton 

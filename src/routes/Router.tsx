@@ -1,13 +1,16 @@
 import {memo, VFC} from "react";
 import { Switch, Route } from "react-router-dom";
-import {Home} from "../components/pages/Home" 
+import {Footerless} from "../components/templetes/Footerless"
+import {Top} from "../components/pages/Top" 
 import { Login } from "../components/pages/Login";
 import { Page404 } from "../components/pages/Page404";
 
 export const Router: VFC = memo(()=>{
   return(
   <Switch>
-    <Route exact path="/"><Home /></Route>
+    <Footerless>
+      <Route exact path="/"><Top /></Route>
+    </Footerless>
     <Route path="/login"><Login /></Route>
 
 

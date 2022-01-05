@@ -1,10 +1,11 @@
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/react";
 import {memo, VFC} from "react";
-import { InputAndSearch } from "../atoms/InputAndSearch/InputAndSearch";
+import { InputAndSearch } from "../atoms/Input/InputAndSearch";
+import { TopLayout } from "../organisms/layout/TopLayout";
 
-export const Home: VFC = memo( ()=> {
+export const Top: VFC = memo( ()=> {
   return(
-    
+    <TopLayout>
     <Flex align="center" justify="center" height="100vh">
       <Box bg="white" w="sm" p={4} borderRadius="md" shadow="md">
       <Heading as="h1" size="lg" textAlign = "center">楽曲検索♪</Heading>
@@ -12,5 +13,6 @@ export const Home: VFC = memo( ()=> {
       <InputAndSearch />
       </Box>
     </Flex>
+    </TopLayout>
   );
 });

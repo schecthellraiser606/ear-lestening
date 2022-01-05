@@ -13,8 +13,10 @@ export const PrimaryButton: VFC<Props> = memo( (props)=> {
 
   return( 
     <Button 
-      bg="cyan.400" 
-      color="white" 
+      bg="green.700" 
+      color="white"
+      borderLeftRadius={0} 
+      borderRightRadius={9}
       _hover={{ opacity: 0.8}} 
       disabled= {disable || loading}
       isLoading = {loading}
