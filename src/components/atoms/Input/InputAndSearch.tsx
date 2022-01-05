@@ -1,6 +1,6 @@
 import { Box, Flex, Input } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
-import { PrimaryButton } from "../buttons/PrimaryButtom";
+import { SearchButton } from "../buttons/SearchButtom";
 import {useMovieSearch} from "../../../hooks/movieSearch"
 
 export const InputAndSearch: VFC = memo( ()=> {
@@ -17,16 +17,17 @@ export const InputAndSearch: VFC = memo( ()=> {
           borderLeftRadius={9}
           borderRightRadius={0}
           backgroundColor="white" 
+          color="black"
           placeholder='アーティスト, 曲名' 
           value={word} 
           onChange={onChangeWord}/>
       </Box>
       <Box>
-      <PrimaryButton 
+      <SearchButton 
         onClick={onClickSerch}
         loading={loading}
         disable={word===""} 
-        >検索</PrimaryButton>
+        >検索</SearchButton>
       </Box>
     </Flex>
   );

@@ -8,7 +8,7 @@ type Props = {
   onClick: () =>void;
 };
 
-export const PrimaryButton: VFC<Props> = memo( (props)=> {
+export const SearchButton: VFC<Props> = memo( (props)=> {
   const {children, disable = false, loading= false, onClick} = props;
 
   return( 
