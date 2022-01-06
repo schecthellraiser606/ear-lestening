@@ -61,4 +61,4 @@ export const useMovieSearch = () =>{
     }, []);
 
     return{ search, loading };
-}
+};

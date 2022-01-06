@@ -34,5 +34,5 @@ const SContainer = styled.div`
   background-size: contain;
   background-position: center;
 	background-repeat: repeat-x;
-  animation: ${Animation} 40s ease-in-out infinite;
+  animation: ${Animation} 60s ease-in-out infinite;
 `
