@@ -5,7 +5,7 @@ import { auth, provider } from "../../API/firebase/firebase";
 import { userState } from "../../store/userState";
 import { useMessage } from "../useMessage";
 
-export const AuthHook = ()=> {
+export const useAuthHook = ()=> {
   const [user, setUser] = useRecoilState(userState)
   const [loading, setLoading] = useState(false);
   const resetStatus = useResetRecoilState(userState);
@@ -14,7 +14,7 @@ export const AuthHook = ()=> {
   const history = useHistory();
 
   //サインイン
-  const useSignIn = useCallback(
+  const userSignIn = useCallback(
      async (email: string, password: string) => {
       setLoading(true);
       try {
@@ -28,7 +28,7 @@ export const AuthHook = ()=> {
     },[]);
 
   //登録
-  const useSignUp = useCallback(
+  const userSignUp = useCallback(
     async (email: string, password: string) => {
       setLoading(true);
       try {
@@ -42,7 +42,7 @@ export const AuthHook = ()=> {
     },[]);
 
   //サインアウト
-  const useSignOut = useCallback(
+  const userSignOut = useCallback(
     async () => {
       setLoading(true);
       try {
@@ -55,7 +55,7 @@ export const AuthHook = ()=> {
       }
     },[]);
 
-  const useGoogleAuth = useCallback(
+  const userGoogleAuth = useCallback(
     async()=>{
       setLoading(true);
       try {
@@ -69,7 +69,7 @@ export const AuthHook = ()=> {
     },[])
 
   //ユーザ状態の監視
-  const useUserAuth = ()=>{
+  const useAuth = ()=>{
     setLoading(true);
     useEffect(() => {
       const unsubscribed = auth.onAuthStateChanged((user) => {
@@ -87,6 +87,6 @@ export const AuthHook = ()=> {
     return user;
   };
 
-  return{ loading, useSignIn, useSignOut, useSignUp, useUserAuth, useGoogleAuth };
+  return{ loading, userSignIn, userSignOut, userSignUp, useAuth, userGoogleAuth };
 
 };

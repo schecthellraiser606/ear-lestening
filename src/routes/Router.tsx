@@ -7,14 +7,14 @@ import { Page404 } from "../components/pages/Page404";
 
 export const Router: VFC = memo(()=>{
   return(
+  <Footerless>
   <Switch>
-    <Footerless>
-      <Route exact path="/"><Top /></Route>
-    </Footerless>
+    <Route exact path="/"><Top /></Route>
     <Route path="/login"><Login /></Route>
 
 
     <Route path="*"><Page404/></Route>
   </Switch>
+  </Footerless>
   );
 });
