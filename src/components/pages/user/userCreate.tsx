@@ -25,7 +25,7 @@ export const UserCreate: VFC = memo( ()=> {
   return(
     <TopLayout>
     <Flex align="center" justify="center" height="100vh">
-    <Box bg="white" padding={6} h={330}>
+    <Box bg="white" padding={6} >
     <Heading fontSize="2xl">Emailアドレスでユーザを作成</Heading>
     <Divider my={4}/>
     <Stack p={2}>
