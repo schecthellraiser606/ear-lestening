@@ -1,7 +1,7 @@
 import {memo, VFC} from "react";
 
-export const googleLogin: VFC = memo( ()=> {
+export const GoogleLogin: VFC = memo( ()=> {
   return(
-    
+    <div></div>
   );
 });
