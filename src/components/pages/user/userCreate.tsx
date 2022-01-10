@@ -1,19 +1,16 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Box, Button, Divider, FormControl, FormLabel, Heading, Input, InputRightElement, Stack } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, FormControl, FormLabel, Heading, Input, InputRightElement, Stack } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
-import { useHistory } from "react-router-dom";
 import { useAuthHook } from "../../../hooks/user/useAuthHook";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { InputEmail } from "../../atoms/Input/EmailInput";
 import { InputPassword } from "../../atoms/Input/PasswordInput";
+import { TopLayout } from "../../organisms/layout/TopLayout";
 
-export const MailLogin: VFC = memo( ()=> {
-  const history = useHistory();
-
+export const UserCreate: VFC = memo( ()=> {
   const [inputEmail, setInputEmail] = useState('');
   const [inputPass, setPass] = useState('');
   const [show, setShow] = useState(false);
-  const {userSignIn, loading} = useAuthHook();
+  const {userSignUp, loading} = useAuthHook();
 
   const isErrorEmail = inputEmail === '';
   const isErrorPass = inputPass === '';
@@ -22,13 +19,14 @@ export const MailLogin: VFC = memo( ()=> {
   const handleInputPassChange = (e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value);
   const handleClickShow = () => setShow(!show);
 
-  const onClickLogin = () => userSignIn(inputEmail, inputPass)
-  const onClickCreateUser = () => history.push('/account_create')
+  const onClickCreate = () => userSignUp(inputEmail, inputPass)
 
 
   return(
-    <Box bg="white" padding={6} h={400}>
-    <Heading fontSize="2xl">Emailログイン</Heading>
+    <TopLayout>
+    <Flex align="center" justify="center" height="100vh">
+    <Box bg="white" padding={6} h={330}>
+    <Heading fontSize="2xl">Emailアドレスでユーザを作成</Heading>
     <Divider my={4}/>
     <Stack p={2}>
 
@@ -37,23 +35,15 @@ export const MailLogin: VFC = memo( ()=> {
     <InputPassword isErrorPass={isErrorPass} show={show} inputPass={inputPass} onChange={handleInputPassChange} onClick={handleClickShow} />
 
     <PrimaryButton 
-        onClick={onClickLogin}
+        onClick={onClickCreate}
         loading={loading}
         disable={inputEmail === "" || inputPass ===""} >
-        ログイン
-    </PrimaryButton>
+        ユーザを作成
+      </PrimaryButton>
     </Stack>
 
-    <Divider my={4}/>
-
-    <Button 
-      rightIcon={<ArrowForwardIcon />} 
-      colorScheme='cyan' 
-      variant='outline'
-      onClick={onClickCreateUser}>
-    アカウントを新規作成
-  </Button>
-
     </Box>
+    </Flex>
+    </TopLayout>
   );
 });

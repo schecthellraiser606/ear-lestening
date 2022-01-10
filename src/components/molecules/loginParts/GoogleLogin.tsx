@@ -8,7 +8,7 @@ export const GoogleLogin: VFC = memo( ()=> {
 
   const onClick = () => userGoogleAuth();
   return(
-    <Box bg="white" padding={6} h={330}>
+    <Box bg="white" padding={6} h={400}>
       <Heading fontSize="2xl">Googleアカウントでログイン</Heading>
       <Divider my={4}/>
       <Button 
@@ -26,7 +26,7 @@ export const GoogleLogin: VFC = memo( ()=> {
         Googleログイン
       </Button>
 
-      <Alert status='info' marginTop={4}>
+      <Alert status='info' marginTop={10} marginBottom={0}>
       <AlertIcon />
         事前にGoogleアカウントを作成してください。
       </Alert>
