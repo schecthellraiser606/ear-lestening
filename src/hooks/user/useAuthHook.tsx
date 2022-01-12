@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState} from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilState, useResetRecoilState} from "recoil";
+import { useRecoilState, useResetRecoilState, useSetRecoilState} from "recoil";
 import { auth, provider } from "../../API/firebase/firebase";
 import { userState } from "../../store/userState";
 import { useMessage } from "../useMessage";
 
 export const useAuthHook = ()=> {
-  const [user, setUser] = useRecoilState(userState)
+  const setUser= useSetRecoilState(userState);
   const [loading, setLoading] = useState(false);
-  const resetStatus = useResetRecoilState(userState);
   const {showMessage} = useMessage();
 
   const history = useHistory();
@@ -18,14 +17,15 @@ export const useAuthHook = ()=> {
      async (email: string, password: string) => {
       setLoading(true);
       try {
-          await auth.signInWithEmailAndPassword(email, password);
+        const authUser = await auth.signInWithEmailAndPassword(email, password);
+          if(authUser.user){setUser(authUser.user);}
       } catch (error) {
         showMessage({ title: "サインイン認証に失敗しました", status: "error"})
       } finally{
         setLoading(false);
         history.push('/');
       }
-    },[]);
+    },[history, showMessage, setUser]);
 
   //登録
   const userSignUp = useCallback(
@@ -39,7 +39,7 @@ export const useAuthHook = ()=> {
         setLoading(false);
         history.push('/');
       }
-    },[]);
+    },[history, showMessage]);
 
   //サインアウト
   const userSignOut = useCallback(
@@ -53,7 +53,7 @@ export const useAuthHook = ()=> {
         setLoading(false);
         history.push('/');
       }
-    },[]);
+    },[history, showMessage]);
 
   const userGoogleAuth = useCallback(
     async()=>{
@@ -66,19 +66,21 @@ export const useAuthHook = ()=> {
         setLoading(false);
         history.push('/');
       } 
-    },[])
+    },[history, showMessage])
 
   //ユーザ状態の監視
   const useAuth = ()=>{
+    const [user, setUser] = useRecoilState(userState);
+    const resetStatus = useResetRecoilState(userState);
+
     setLoading(true);
     useEffect(() => {
-      const unsubscribed = auth.onAuthStateChanged((user) => {
-        if(user){
-          setUser(user);
+      const unsubscribed = auth.onAuthStateChanged((authuser) => {
+        if(authuser){
+          setUser(authuser);
         } else{
           resetStatus();
-        }
-        setLoading(false); 
+        } 
       });
       return () => unsubscribed();
     }, [setUser, resetStatus]);

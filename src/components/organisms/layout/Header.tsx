@@ -1,8 +1,9 @@
-import { Avatar, Box, Flex, Heading, Link, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { memo, useCallback, VFC } from "react";
 import { useHistory } from "react-router-dom";
 import { MenuIconButton } from "../../atoms/buttons/MenuIconButton";
 import { InputAndSearch } from "../../atoms/Input/InputAndSearch";
+import { AvatorPopover } from "../../molecules/avatorPopover";
 import { MenuDrawer } from "../../molecules/menuDrawer";
 
 export const Header: VFC = memo( ()=> {
@@ -10,7 +11,6 @@ export const Header: VFC = memo( ()=> {
 
   const history = useHistory();
   const onClickHome = useCallback(() => history.push("/"), [history]);
-  const onClickAboutUser = useCallback(() => history.push("/"), [history]);
 
 
   return(
@@ -32,9 +32,7 @@ export const Header: VFC = memo( ()=> {
         display={{base:"none", md:"flex"}}>
         
         <Box pr={4}>
-        <Avatar >
-          <Link onClick={onClickAboutUser}></Link>
-        </Avatar>
+        <AvatorPopover/>
         </Box>
 
         <InputAndSearch />
