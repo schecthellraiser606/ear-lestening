@@ -5,13 +5,13 @@ import { useRecoilValue } from "recoil";
 import { userState } from "../store/userState";
 
 
-const PrivateRoute: VFC<RouteProps> = memo((props)=>{
+const PublicRoute: VFC<RouteProps> = memo((props)=>{
   const rest = _.omit(props, ['component'])
 
   const signInUser = useRecoilValue(userState);
   const isAuthenticated = signInUser !== null;
 
-  return isAuthenticated ? <Route {...rest} /> : <Redirect to="/login" />;
+  return isAuthenticated ? <Redirect to="/" /> : <Route {...rest} />;
 });
 
-export default PrivateRoute
+export default PublicRoute

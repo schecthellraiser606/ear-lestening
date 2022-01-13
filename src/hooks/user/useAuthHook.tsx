@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState} from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilState, useResetRecoilState, useSetRecoilState} from "recoil";
+import { useSetRecoilState} from "recoil";
 import { auth, provider } from "../../API/firebase/firebase";
 import { userState } from "../../store/userState";
 import { useMessage } from "../useMessage";
@@ -68,27 +68,8 @@ export const useAuthHook = ()=> {
       } 
     },[history, showMessage])
 
-  //ユーザ状態の監視
-  const useAuth = ()=>{
-    const [user, setUser] = useRecoilState(userState);
-    const resetStatus = useResetRecoilState(userState);
 
-    setLoading(true);
-    useEffect(() => {
-      const unsubscribed = auth.onAuthStateChanged((authuser) => {
-        if(authuser){
-          setUser(authuser);
-        } else{
-          resetStatus();
-        } 
-      });
-      return () => unsubscribed();
-    }, [setUser, resetStatus]);
-    setLoading(false);
 
-    return user;
-  };
-
-  return{ loading, userSignIn, userSignOut, userSignUp, useAuth, userGoogleAuth };
+  return{ loading, userSignIn, userSignOut, userSignUp, userGoogleAuth };
 
 };
