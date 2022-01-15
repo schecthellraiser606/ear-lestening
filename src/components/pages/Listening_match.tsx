@@ -1,4 +1,4 @@
-import { Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
+import { Divider, Flex, Grid, GridItem, Heading } from "@chakra-ui/react";
 import {memo, VFC} from "react";
 import { useRecoilState } from "recoil";
 import { videoState } from "../../store/videoState";
@@ -15,9 +15,10 @@ export const Listening_martch: VFC = memo( ()=> {
       検索結果: {videoWord}
     </Heading>
     <Grid 
-      h='200px'
+      h='378px'
       templateColumns='repeat(3, 1fr)' 
-      gap={2}>
+      gap={2}
+      backgroundColor="cyan.100">
       
       {videoIdex.map((id) => (
         <GridItem w="100%">
@@ -26,6 +27,7 @@ export const Listening_martch: VFC = memo( ()=> {
       ))}
 
     </Grid>
+    <Divider my={4}/>
     </>
   );
 });
