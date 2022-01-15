@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState} from "react";
+import { getAuth, updateEmail, updateProfile } from "firebase/auth";
+import { useCallback, useState} from "react";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState} from "recoil";
 import { auth, provider } from "../../API/firebase/firebase";
@@ -69,7 +70,42 @@ export const useAuthHook = ()=> {
     },[history, showMessage])
 
 
+  const userUpdateName = useCallback(
+    async(name: string) => {
+      setLoading(true);
+      const authuser = getAuth();
+      if(authuser.currentUser && name){
+        updateProfile(authuser.currentUser, {
+          displayName: name
+        })
+        .then(()=>showMessage({ title: "変更完了", status: "info"}))
+        .catch((error)=>showMessage({ title: "変更できませんでした", status: "error"}))
+        .finally(()=>{setLoading(false)})
+      }else{
+        showMessage({ title: "変更できませんでした。", status: "error"})
+        history.push('/');
+      }
+    },
+    [history, showMessage],);
 
-  return{ loading, userSignIn, userSignOut, userSignUp, userGoogleAuth };
+
+    const userUpdateEmail = useCallback(
+      async(email: string) => {
+        setLoading(true);
+        const authuser = getAuth();
+        if(authuser.currentUser && email){
+          updateEmail(authuser.currentUser, email)
+          .then(()=>showMessage({ title: "変更完了", status: "info"}))
+          .catch((error)=>showMessage({ title: "変更できませんでした", status: "error"}))
+          .finally(()=>{setLoading(false)})
+        }else{
+          showMessage({ title: "変更できませんでした。", status: "error"})
+          history.push('/');
+        }
+      },
+      [history, showMessage],);
+
+
+  return{ loading, userSignIn, userSignOut, userSignUp, userGoogleAuth, userUpdateName, userUpdateEmail };
 
 };

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useRecoilState } from "recoil"
 import { videoState } from "../store/videoState"
 import { YoutubeApi } from "../API/YouTubeAPI/apiv3Youtube"
 import { youtube } from "../Types/Youtube/youtubeapi"
 import axios from "axios"
 import {useMessage} from "./useMessage"
+import { useHistory } from "react-router-dom"
 
 type Props = {
   words: string
@@ -19,10 +20,11 @@ type param = {
 
 export const useMovieSearch = () =>{
   const [videoInfo, setVideoInfo] = useRecoilState(videoState);
-  const videoIdex = videoInfo.videoId
 
   const [loading, setLoading] = useState(false);
   const {showMessage} = useMessage();
+
+  const history = useHistory();
 
   const search = useCallback(
     (props: Props) => {
@@ -46,10 +48,20 @@ export const useMovieSearch = () =>{
             console.log("API success:", result);
 
             if (result.data.items && result.data.items.length !== 0) {
-              setVideoInfo({videoId: [""]})
-              result.data.items.map((item)=>(
-                setVideoInfo({videoId: [...videoIdex, item.id.videoId]})
-              ))
+              setVideoInfo({videoId:[], word: ""})
+              const firstItem = result.data.items[0];
+              const SecondItem = result.data.items[1];
+              const ThirdItem = result.data.items[2];
+              setVideoInfo({videoId:[
+                firstItem.id.videoId,
+                SecondItem.id.videoId,
+                ThirdItem.id.videoId,
+              ], word:words})
+              
+
+              console.log(videoInfo.videoId)
+
+              history.push('/search_result')
             }
           })
         .catch(()=>{

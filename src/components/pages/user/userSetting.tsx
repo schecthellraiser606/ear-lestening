@@ -1,17 +1,25 @@
-import { Box, Divider, Flex, FormControl, Heading, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, FormControl, Heading, Input, InputRightElement, Stack } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
 import { getAuth, updateProfile } from "firebase/auth";
 import { TopLayout } from "../../organisms/layout/TopLayout";
+import { useAuthHook } from "../../../hooks/user/useAuthHook";
+import { SecondaryButton } from "../../atoms/buttons/SecondaryButton";
 
 export const UserSetting: VFC = memo( ()=> {
   const auth = getAuth();
   const signInUser = auth.currentUser;
+  const {loading, userUpdateName, userUpdateEmail, userSignOut } = useAuthHook();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState(signInUser?.displayName ? (signInUser.displayName):(""));
+  const [email, setEmail] = useState(signInUser?.email ? (signInUser.email) : (""));
 
   const onChangeName = (e: ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+
+  const onClickUpdateName = () => userUpdateName(name);
+  const onClickUpdatteEmail = () => userUpdateEmail(email); 
+  const onClickLogout = () => userSignOut();
+
 
   return(
     <TopLayout>
@@ -22,10 +30,27 @@ export const UserSetting: VFC = memo( ()=> {
 
     <Stack textAlign="center">
       <FormControl>ユーザ名</FormControl>
-      <Input value={ signInUser?.displayName || "" } onChange={onChangeName} isReadOnly={false}/>
+      <Input value={  name } onChange={onChangeName} isReadOnly={false}/>
+      <InputRightElement width='4.5rem'>
+      <Button h='1.75rem' size='sm' onClick={onClickUpdateName} isLoading={loading}>
+        ユーザ名変更
+      </Button>
+      </InputRightElement>
+
       <FormControl>Email Address</FormControl>
-      <Input value={ signInUser?.email || "" } onChange={onChangeEmail} isReadOnly={false}/>
+      <Input value={ email } onChange={onChangeEmail} isReadOnly={false}/>
+      <InputRightElement width='4.5rem'>
+      <Button h='1.75rem' size='sm' onClick={onClickUpdatteEmail} isLoading={loading}>
+        Email Address変更
+      </Button>
+      </InputRightElement>
     </Stack>
+    <Divider my={5}/>
+
+    <SecondaryButton disable={false} loading={loading} onClick={onClickLogout}>
+      ログアウト
+    </SecondaryButton>
+
 
     </Box>
     </Flex>
