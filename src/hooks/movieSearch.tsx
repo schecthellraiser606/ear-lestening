@@ -16,6 +16,7 @@ type param = {
   q: string,
   type: string,
   maxResults: string,
+  part : string,
 }
 
 export const useMovieSearch = () =>{
@@ -37,8 +38,9 @@ export const useMovieSearch = () =>{
       const params: param = {
         key: apikey,
         q: words, // 検索キーワード
-        type: "video", // video,channel,playlistから選択できる
+        type: "video", // video
         maxResults: "3", // 結果の最大数
+        part: "snippet",
       };
 
       const queryParams = new URLSearchParams(params);
@@ -48,18 +50,23 @@ export const useMovieSearch = () =>{
             console.log("API success:", result);
 
             if (result.data.items && result.data.items.length !== 0) {
-              setVideoInfo({videoId:[], word: ""})
+              setVideoInfo({videoId:[], word: "", thumnailsURL:[]})
               const firstItem = result.data.items[0];
               const SecondItem = result.data.items[1];
               const ThirdItem = result.data.items[2];
-              setVideoInfo({videoId:[
-                firstItem.id.videoId,
-                SecondItem.id.videoId,
-                ThirdItem.id.videoId,
-              ], word:words})
-              
-
-              console.log(videoInfo.videoId)
+              setVideoInfo({
+                videoId:[
+                  firstItem.id.videoId,
+                  SecondItem.id.videoId,
+                  ThirdItem.id.videoId,
+                ],
+                word:words,
+                thumnailsURL:[
+                  firstItem.snippet.thumbnails.high.url,
+                  SecondItem.snippet.thumbnails.high.url,
+                  ThirdItem.snippet.thumbnails.high.url
+                ]})
+              console.log(videoInfo.thumnailsURL)
 
               history.push('/search_result')
             }

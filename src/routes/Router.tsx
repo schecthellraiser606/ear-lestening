@@ -12,7 +12,6 @@ import { userState } from "../store/userState";
 import { auth } from "../API/firebase/firebase";
 import PublicRoute from "./PublicRoute";
 import { Listening_martch } from "../components/pages/Listening_match";
-import { One_Listening } from "../components/pages/One_Listening";
 
 export const Router: VFC = memo(()=>{
   const setUser = useSetRecoilState(userState);
@@ -37,7 +36,6 @@ export const Router: VFC = memo(()=>{
     <Route path="/account_create"><UserCreate /></Route>
     <PrivateRoute exact path="/user/setting"><UserSetting /></PrivateRoute>
     <Route exact path="/search_result"><Listening_martch/></Route>
-    <Route path="/test"><One_Listening /></Route>
 
     <Route path="*"><Page404/></Route>
   </Switch>

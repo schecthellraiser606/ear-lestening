@@ -13,11 +13,21 @@ export type item = {
       title: string,
       description: string,
       thumbnails: {
-        (key:string): {
+        default: {
           url: string,
           width: string,
           height: string,
-        }
+        },
+        medium: {
+          url: string,
+          width: string,
+          height: string,
+        },
+        high: {
+          url: string,
+          width: string,
+          height: string,
+        },
       },
       channelTitle: string
     }

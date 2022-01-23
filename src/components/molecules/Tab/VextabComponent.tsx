@@ -1,10 +1,9 @@
+import { Flex } from "@chakra-ui/react";
 import {memo, useEffect, VFC} from "react";
 
 type Props ={
   editor: string;
-  tuningkey: string;
-  tuning: string;
-  data: string;
+  data?: string;
 } 
 
 declare module 'react' {
@@ -14,7 +13,7 @@ declare module 'react' {
 }
 
 export const VexTabComponent: VFC<Props> = memo((prop)=> {
-  const {editor, tuningkey, tuning, data} = prop
+  const {editor, data} = prop
   const br = "\n"
 
   useEffect(() => {
@@ -26,13 +25,11 @@ export const VexTabComponent: VFC<Props> = memo((prop)=> {
 }, []);
 
   return(
-    <>
+    <Flex>
     <div className="vextab-auto" editor={editor} style={{whiteSpace: 'pre-line'}}>
-    tabstave key={tuningkey} tuning={tuning}
-    {br}
     {data}
     </div> 
-    </>
+    </Flex>
   );
   
 });
