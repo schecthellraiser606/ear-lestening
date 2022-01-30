@@ -1,5 +1,5 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Box, Button, Divider, FormControl, FormLabel, Heading, Input, InputRightElement, Stack } from "@chakra-ui/react";
+import { Box, Button, Divider, Heading, Stack } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
 import { useHistory } from "react-router-dom";
 import { useAuthHook } from "../../../hooks/user/useAuthHook";

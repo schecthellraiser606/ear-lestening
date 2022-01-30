@@ -7,4 +7,4 @@ export const userState = atom<State>({
   key: "userState",
   default: null,
   // dangerouslyAllowMutability: true,
-});
+})

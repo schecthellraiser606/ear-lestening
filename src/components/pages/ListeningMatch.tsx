@@ -1,17 +1,19 @@
-import { Divider, Flex, Grid, GridItem, Heading, useDisclosure, Wrap, WrapItem } from "@chakra-ui/react";
-import {memo, useCallback, useState, VFC} from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { Divider, Grid, GridItem, Heading, useDisclosure, Wrap, WrapItem } from "@chakra-ui/react";
+import {memo, useCallback, VFC} from "react";
+import { useRecoilValue } from "recoil";
 import { videoState } from "../../store/videoState";
 import { MoviePlayer } from "../molecules/moviePlayer";
 import { TabCard } from "../organisms/card/TabCard";
 import { useSelectTab } from "../../hooks/tab/tabSelect";
 import { TabModal } from "../organisms/modal/TabModal";
-import { useAllTab } from "../../test/testUser";
+import { searchTabState } from "../../store/dbreturn";
+import { CreateTabButtom } from "../molecules/CreateTabButtom";
+import { userState } from "../../store/userState";
 
 
-export const Listening_martch: VFC = memo( ()=> {
-  const {tabs} = useAllTab();
-
+export const ListeningMartch: VFC = memo( ()=> {
+  const user = useRecoilValue(userState)
+  const tabs = useRecoilValue(searchTabState);
   const videoInfo = useRecoilValue(videoState);
   const videoIdex = videoInfo.videoId
   const videoWord = videoInfo.word
@@ -43,7 +45,16 @@ export const Listening_martch: VFC = memo( ()=> {
       ))}
 
     </Grid>
+
     <Divider my={4}/>
+    {user?.uid && (
+      <CreateTabButtom /> 
+    )}
+
+    <Heading as="h1" size="lg" m={4}>
+      Tab一覧
+    </Heading>
+
     <Wrap p={{base: 4, md: 10}} justify="space-around">
     {tabs.map((tab, index)=>(
         <WrapItem key={tab.id} mx="auto">

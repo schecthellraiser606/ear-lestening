@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Box, Button, Divider, Heading, Stack } from "@chakra-ui/react";
+import { Alert, AlertIcon, Box, Button, Divider, Heading} from "@chakra-ui/react";
 import {memo, VFC} from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useAuthHook } from "../../../hooks/user/useAuthHook";

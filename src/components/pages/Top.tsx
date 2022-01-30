@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Divider, Flex, Heading} from "@chakra-ui/react";
 import {memo, VFC} from "react";
 import { InputAndSearch } from "../atoms/Input/InputAndSearch";
 import { TopLayout } from "../organisms/layout/TopLayout";

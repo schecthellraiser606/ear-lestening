@@ -1,5 +1,5 @@
 export type MainTab ={
-  id: number;
+  id: string;
   writer: string;
   userId: string;
   wrotedate: Date;

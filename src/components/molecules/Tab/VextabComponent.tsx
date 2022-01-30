@@ -1,9 +1,10 @@
-import { Flex } from "@chakra-ui/react";
-import {memo, useEffect, VFC} from "react";
+import { Flex, Stack, Text, Textarea } from "@chakra-ui/react";
+import { ChangeEvent, memo, useEffect, VFC} from "react";
 
 type Props ={
-  editor: string;
+  isEditor: boolean;
   data?: string;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>)=>void;
 } 
 
 declare module 'react' {
@@ -13,8 +14,7 @@ declare module 'react' {
 }
 
 export const VexTabComponent: VFC<Props> = memo((prop)=> {
-  const {editor, data} = prop
-  const br = "\n"
+  const {data, isEditor, onChange} = prop
 
   useEffect(() => {
     const head = document.getElementsByTagName('head')[0] as HTMLElement;
@@ -22,13 +22,21 @@ export const VexTabComponent: VFC<Props> = memo((prop)=> {
     scriptUrl.type = 'text/javascript';
     scriptUrl.src = 'https://unpkg.com/vextab/releases/div.prod.js';
     head.appendChild(scriptUrl);
-}, []);
+}, [data]);
 
   return(
     <Flex>
-    <div className="vextab-auto" editor={editor} style={{whiteSpace: 'pre-line'}}>
+    <Stack>
+    <div className="vextab-auto" editor="false" style={{whiteSpace: 'pre-line'}}>
     {data}
-    </div> 
+    </div>
+    {isEditor && (
+      <>
+      <Text>編集スペース</Text>
+      <Textarea value={data} onChange={onChange} h="xl" />
+      </>
+    )} 
+    </Stack>
     </Flex>
   );
   

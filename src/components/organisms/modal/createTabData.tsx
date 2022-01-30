@@ -1,26 +1,33 @@
 import { Divider, FormControl, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea } from "@chakra-ui/react";
 import {ChangeEvent, memo, useEffect, useState, VFC} from "react";
-import { useMessage } from "../../../hooks/useMessage";
 import { MainTab } from "../../../Types/tab/TabModal";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { VexTabComponent } from "../../molecules/Tab/VextabComponent";
 
 
-import { GoodComponent } from "../../molecules/good";
 import firebase from 'firebase/compat/app';
+import { useRecoilValue } from "recoil";
+import { userState } from "../../../store/userState";
+import {videoState} from "../../../store/videoState"
+import { useDbHook } from "../../../hooks/db/dbhooks";
 
 type Props = {
   maindata: MainTab | null | firebase.firestore.DocumentData ;
   isOpen: boolean;
-  isEditor?: boolean;
   onClose: () => void;
 }
 
 let today1 = new Date();
 
-export const TabModal: VFC<Props> = memo( (props)=> {
-  const {maindata, isOpen, isEditor = false, onClose} = props;
-  const { showMessage } = useMessage();
+export const CreateTabData: VFC<Props> = memo( (props)=> {
+  const today1 = new Date();
+
+  const user = useRecoilValue(userState)
+  const videoInfo = useRecoilValue(videoState)
+
+  const {maindata, isOpen, onClose} = props;
+
+  const { createTab, loadingStore } = useDbHook(); 
 
   const [writerName, setWriterName] = useState('');
   const [wroteDate, setWroteDate] = useState(today1);
@@ -32,32 +39,28 @@ export const TabModal: VFC<Props> = memo( (props)=> {
   const [endsec, setEndSec] = useState(10);
 
   const [title, setTitle] = useState(''); 
-  const [artist, setArtist] = useState(''); 
-  const [good, setGood] = useState(0);
+  const [artist, setArtist] = useState('');
   
-  const [tabData, setTabData] = useState('');
+  const [tabData, setTabData] = useState(''); 
   const [comment, setComment] = useState('');
 
   useEffect(() => {
-    setWriterName(maindata?.writer ?? '');
+    setWriterName(user?.displayName?? '');
     setWroteDate(maindata?.wrotedate ?? today1);
     setUpdateDate(maindata?.updateDate ?? today1);
     setStartMin(maindata?.copytime.start.min ?? 0);
     setStartSec(maindata?.copytime.start.sec ?? 0);
     setEndMin(maindata?.copytime.end.min ?? 0);
     setEndSec(maindata?.copytime.end.sec ?? 0);
-    setTitle(maindata?.title ?? '');
-    setArtist(maindata?.artist ?? '');
-    setGood(maindata?.good ?? 0);
+    setTitle('');
+    setArtist('');
     setTabData(maindata?.tabdata ?? '');
     setComment(maindata?.comment ?? '');
     
-  }, [maindata])
+  }, [maindata, user?.displayName])
 
   const onChangeWriterName = (e: ChangeEvent<HTMLInputElement>) => setWriterName(e.target.value);
-  const onChangeUpdateDate = () =>{
-    setUpdateDate(today1);
-  }
+
   const onChangeStartMin = (e: ChangeEvent<HTMLInputElement>) => setStartMin(e.target.valueAsNumber);
   const onChangeStartSec = (e: ChangeEvent<HTMLInputElement>) => setStartSec(e.target.valueAsNumber);
   const onChangeEndMin = (e: ChangeEvent<HTMLInputElement>) => setEndMin(e.target.valueAsNumber);
@@ -67,12 +70,31 @@ export const TabModal: VFC<Props> = memo( (props)=> {
   const onChangeArtist = (e: ChangeEvent<HTMLInputElement>) => setArtist(e.target.value);
 
   const onChangeTabData = (e: ChangeEvent<HTMLTextAreaElement>) => setTabData(e.target.value);
+
   const onChangeComment = (e: ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value);
 
   const photoURL = "https://source.unsplash.com/2LowviVHZ-E";
 
-  const onClickUpdate = () => showMessage({ title: "更新しました", status: "success"});;
-  const onClickgood = () =>showMessage({ title: "Goodしたよ", status: "success"});;
+  const onClickCreate = () => {
+    const value = {
+      writer: writerName,
+      userId: user?.uid ?? '',
+      wrotedate: firebase.firestore.Timestamp.now(),
+      updateDate: firebase.firestore.Timestamp.now(),
+      videoID: videoInfo.videoId[0],
+      copytime: {
+        start:{min:startmin, sec:startsec,},
+        end:{min:endmin, sec:endsec,},
+      },
+      title: title,
+      artist: artist,
+      good: 0,
+      tabdata: tabData,
+      comment: comment,
+    }
+    createTab(value);
+    onClose();
+  }
 
   return(
     <Modal 
@@ -96,44 +118,41 @@ export const TabModal: VFC<Props> = memo( (props)=> {
         src={photoURL ?? undefined}/>
 
      <FormControl>作成者</FormControl>
-     <Input value={writerName} onChange={onChangeWriterName} isReadOnly={!isEditor} />
+     <Input value={writerName} onChange={onChangeWriterName}/>
      <FormControl>作成日時</FormControl>
      <Input value={wroteDate.toDateString()} isReadOnly/>
      <FormControl>更新日時</FormControl>
-     <Input value={updateDate.toDateString()} onChange={onChangeUpdateDate} isReadOnly/>
+     <Input value={updateDate.toDateString()} isReadOnly/>
      
      <FormControl>コピー秒数</FormControl>
      <HStack>
-     <Input value={startmin} onChange={onChangeStartMin} isReadOnly={!isEditor} />
+     <Input value={startmin} onChange={onChangeStartMin} />
      <Text>:</Text>
-     <Input value={startsec} onChange={onChangeStartSec} isReadOnly={!isEditor} />
+     <Input value={startsec} onChange={onChangeStartSec} />
      <Text>〜</Text>
-     <Input value={endmin} onChange={onChangeEndMin} isReadOnly={!isEditor} />
+     <Input value={endmin} onChange={onChangeEndMin}/>
      <Text>:</Text>
-     <Input value={endsec} onChange={onChangeEndSec} isReadOnly={!isEditor} />
+     <Input value={endsec} onChange={onChangeEndSec}/>
      </HStack>
      
      <FormControl>曲名</FormControl>
-     <Input value={title} onChange={onChangeTitle} isReadOnly={!isEditor} />
+     <Input value={title} onChange={onChangeTitle} />
      <FormControl>アーティスト名</FormControl>
-     <Input value={artist} onChange={onChangeArtist} isReadOnly={!isEditor} />
+     <Input value={artist} onChange={onChangeArtist}/>
      <FormControl>Tab</FormControl>
-     <VexTabComponent isEditor= {isEditor} data={tabData} onChange={onChangeTabData}/>
+     <VexTabComponent isEditor={true} data={tabData} onChange={onChangeTabData} />
      <FormControl>詳細説明</FormControl>
-     <Textarea value={comment} onChange={onChangeComment}  />
+     <Textarea value={comment} onChange={onChangeComment} />
 
-     <Divider my={4}/>
-     <GoodComponent good={good} onClick={onClickgood}/>
      <Divider my={4}/>
     
      </Stack>
      </ModalBody>
 
-     {isEditor && (
+
       <ModalFooter>
-        <PrimaryButton onClick={onClickUpdate}>更新</PrimaryButton>
+        <PrimaryButton onClick={onClickCreate} loading={loadingStore}>新規作成</PrimaryButton>
       </ModalFooter>
-      ) }
 
      </ModalContent>
 

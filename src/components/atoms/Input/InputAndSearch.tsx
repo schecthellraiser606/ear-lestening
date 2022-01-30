@@ -3,13 +3,26 @@ import { FaYoutube } from 'react-icons/fa';
 import {ChangeEvent, memo, useState, VFC} from "react";
 import { SearchButton } from "../buttons/SearchButtom";
 import {useMovieSearch} from "../../../hooks/movieSearch"
+import { useDbHook } from "../../../hooks/db/dbhooks";
+import { useHistory } from "react-router-dom";
 
 export const InputAndSearch: VFC = memo( ()=> {
   const {search, loading} = useMovieSearch();
+  const { searchTab, loadingStore} = useDbHook();
   const [word, setWord] = useState("");
+
+  const history = useHistory();
+
   const onChangeWord = (e:ChangeEvent<HTMLInputElement>) => setWord(e.target.value);
 
-  const onClickSerch = () => search({words:word})
+  const onClickSerch = () => {
+    try{
+    search({words:word})
+    searchTab(word)
+    }finally{
+    history.push('/search_result')
+    }
+  }
 
   return(
     <Flex justify="center">
@@ -32,7 +45,7 @@ export const InputAndSearch: VFC = memo( ()=> {
       <Box>
       <SearchButton 
         onClick={onClickSerch}
-        loading={loading}
+        loading={loading || loadingStore}
         disable={word===""} 
         >検索</SearchButton>
       </Box>

@@ -5,7 +5,6 @@ import { YoutubeApi } from "../API/YouTubeAPI/apiv3Youtube"
 import { youtube } from "../Types/Youtube/youtubeapi"
 import axios from "axios"
 import {useMessage} from "./useMessage"
-import { useHistory } from "react-router-dom"
 
 type Props = {
   words: string
@@ -25,7 +24,6 @@ export const useMovieSearch = () =>{
   const [loading, setLoading] = useState(false);
   const {showMessage} = useMessage();
 
-  const history = useHistory();
 
   const search = useCallback(
     (props: Props) => {
@@ -66,9 +64,6 @@ export const useMovieSearch = () =>{
                   SecondItem.snippet.thumbnails.high.url,
                   ThirdItem.snippet.thumbnails.high.url
                 ]})
-              console.log(videoInfo.thumnailsURL)
-
-              history.push('/search_result')
             }
           })
         .catch(()=>{
@@ -77,7 +72,7 @@ export const useMovieSearch = () =>{
         .finally(()=>{
           setLoading(false);
         });
-    }, []);
+    }, [setVideoInfo, showMessage, videoInfo.thumnailsURL]);
 
     return{ search, loading };
 };

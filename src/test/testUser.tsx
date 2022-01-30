@@ -1,12 +1,11 @@
-import { useState } from "react";
 import {MainTab} from "../Types/tab/TabModal"
 
+const today2 = new Date();
 const today1 = new Date();
-const today2 = new Date('2017/11/27 20:30');
 
 export const UserModel01: MainTab={
-    id: 1,
-    writer: "田中",
+    id: "001",
+    writer: "テスト１",
     userId: "1",
     wrotedate: today1,
     updateDate: today2,
@@ -23,8 +22,8 @@ export const UserModel01: MainTab={
   }
 
  export const UserModel02: MainTab={
-    id: 2,
-    writer: "上田",
+   id: "002",
+    writer: "テスト２",
     userId: "2",
     wrotedate: today1,
     updateDate: today2,
@@ -38,9 +37,4 @@ export const UserModel01: MainTab={
     good: 0,
     tabdata: "tabstave\nnotes (5/4.5/5)s(7/4.7/5)s(5/4.5/5) (5/4.5/5)h(7/5) |\nnotes t(12/5.12/4)s(5/5.5/4) 3b4/5 5V/6",
     comment: "test02",
-  }
-
-  export const useAllTab = () =>{
-    const [tabs, setTabs] = useState<Array<MainTab>>([UserModel01,UserModel02])
-    return {tabs};
   }

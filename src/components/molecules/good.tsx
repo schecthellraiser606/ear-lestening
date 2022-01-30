@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, IconButton, Text } from "@chakra-ui/react";
+import { Grid, GridItem, IconButton, Text } from "@chakra-ui/react";
 import {memo, VFC} from "react";
 import { BsHandThumbsUp } from "react-icons/bs";
 
