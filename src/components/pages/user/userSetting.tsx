@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Flex, FormControl, Heading, Input, InputRightElement, Stack } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, FormControl, FormLabel, Heading, Input, InputRightElement, Spacer, Stack } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
 import { getAuth } from "firebase/auth";
 import { TopLayout } from "../../organisms/layout/TopLayout";
@@ -10,8 +10,8 @@ export const UserSetting: VFC = memo( ()=> {
   const signInUser = auth.currentUser;
   const {loading, userUpdateName, userUpdateEmail, userSignOut } = useAuthHook();
 
-  const [name, setName] = useState(signInUser?.displayName ? (signInUser.displayName):(""));
-  const [email, setEmail] = useState(signInUser?.email ? (signInUser.email) : (""));
+  const [name, setName] = useState( signInUser?.displayName ?? "");
+  const [email, setEmail] = useState(signInUser?.email ?? "");
 
   const onChangeName = (e: ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
@@ -25,32 +25,40 @@ export const UserSetting: VFC = memo( ()=> {
     
     <TopLayout>
       <Flex align="center" justify="center" height="100vh">
-      <Box bg="white" padding={6} >
+      <Box bg="white" padding={6} w="lg" >
       <Heading fontSize="2xl">ユーザ情報</Heading>
       <Divider my={4}/>
 
       <Stack textAlign="center">
-        <FormControl>ユーザ名</FormControl>
-        <Input value={  name } onChange={onChangeName} isReadOnly={false}/>
-        <InputRightElement width='4.5rem'>
-        <Button h='1.75rem' size='sm' onClick={onClickUpdateName} isLoading={loading}>
-          ユーザ名変更
+        <FormControl>
+        <FormLabel>ユーザ名</FormLabel>
+        <Input value={ name } onChange={onChangeName} isReadOnly={false}/>
+        <InputRightElement>
+        <Button size='sm' onClick={onClickUpdateName} isLoading={loading}>
+          変更
         </Button>
         </InputRightElement>
+        </FormControl>
 
-        <FormControl>Email Address</FormControl>
+        <Spacer/>
+
+        <FormControl>
+        <FormLabel>Email Address</FormLabel>
         <Input value={ email } onChange={onChangeEmail} isReadOnly={false}/>
-        <InputRightElement width='4.5rem'>
-        <Button h='1.75rem' size='sm' onClick={onClickUpdatteEmail} isLoading={loading}>
-          Email Address変更
+        <InputRightElement>
+        <Button size='sm' onClick={onClickUpdatteEmail} isLoading={loading}>
+          変更
         </Button>
         </InputRightElement>
+        </FormControl>
       </Stack>
       <Divider my={5}/>
 
+      <Box textAlign="right">
       <SecondaryButton disable={false} loading={loading} onClick={onClickLogout}>
         ログアウト
       </SecondaryButton>
+      </Box>
 
 
       </Box>

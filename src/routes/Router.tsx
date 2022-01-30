@@ -34,7 +34,7 @@ export const Router: VFC = memo(()=>{
     <Route exact path="/"><Top /></Route>
     <PublicRoute path="/login"><Login /></PublicRoute>
     <Route path="/account_create"><UserCreate /></Route>
-    <PrivateRoute exact path="/user/setting"><UserSetting /></PrivateRoute>
+    <PrivateRoute exact path="/user_setting"><UserSetting /></PrivateRoute>
     <Route exact path="/search_result"><ListeningMartch/></Route>
 
     <Route path="*"><Page404/></Route>

@@ -8,7 +8,7 @@ export const AvatorSignInUser: VFC = memo( ()=> {
   const history = useHistory();
   const {userSignOut} = useAuthHook();
 
-  const onClickUserSetting = () => history.push('/user/setting')
+  const onClickUserSetting = () => history.push('/user_setting')
   const onClickLogout = () => userSignOut();
 
   return(
