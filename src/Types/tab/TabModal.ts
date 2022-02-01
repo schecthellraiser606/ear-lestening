@@ -1,9 +1,11 @@
+import firebase from 'firebase/compat/app';
+
 export type MainTab ={
   id: string;
   writer: string;
   userId: string;
-  wrotedate: Date;
-  updateDate: Date;
+  wrotedate: firebase.firestore.Timestamp;
+  updateDate: firebase.firestore.Timestamp;
   videoID: string;
   copytime: {
     start:{min:number, sec:number;}

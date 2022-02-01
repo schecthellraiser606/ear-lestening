@@ -1,7 +1,8 @@
 import {MainTab} from "../Types/tab/TabModal"
+import firebase from 'firebase/compat/app';
 
-const today2 = new Date();
-const today1 = new Date();
+let today1 = firebase.firestore.Timestamp.now()
+let today2 = firebase.firestore.Timestamp.now()
 
 export const UserModel01: MainTab={
     id: "001",

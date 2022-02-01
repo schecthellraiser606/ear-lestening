@@ -4,8 +4,8 @@ import { MainTab } from '../Types/tab/TabModal';
 
 type State =  Array<MainTab> | firebase.firestore.DocumentData[]
 
-export const searchTabState = atom<State>({
-  key: "searchTabState",
+export const searchTabStateArtist = atom<State>({
+  key: "searchTabStateArtist",
   default: [],
   // dangerouslyAllowMutability: true,
 })

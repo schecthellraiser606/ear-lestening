@@ -17,10 +17,9 @@ type Props = {
   onClose: () => void;
 }
 
-let today1 = new Date();
+let today1 = firebase.firestore.Timestamp.now()
 
 export const CreateTabData: VFC<Props> = memo( (props)=> {
-  const today1 = new Date();
 
   const user = useRecoilValue(userState)
   const videoInfo = useRecoilValue(videoState)
@@ -120,9 +119,9 @@ export const CreateTabData: VFC<Props> = memo( (props)=> {
      <FormControl>作成者</FormControl>
      <Input value={writerName} onChange={onChangeWriterName}/>
      <FormControl>作成日時</FormControl>
-     <Input value={wroteDate.toDateString()} isReadOnly/>
+     <Input value={wroteDate.toDate().toDateString()} isReadOnly/>
      <FormControl>更新日時</FormControl>
-     <Input value={updateDate.toDateString()} isReadOnly/>
+     <Input value={updateDate.toDate().toDateString()} isReadOnly/>
      
      <FormControl>コピー秒数</FormControl>
      <HStack>

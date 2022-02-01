@@ -6,14 +6,18 @@ import { MoviePlayer } from "../molecules/moviePlayer";
 import { TabCard } from "../organisms/card/TabCard";
 import { useSelectTab } from "../../hooks/tab/tabSelect";
 import { TabModal } from "../organisms/modal/TabModal";
-import { searchTabState } from "../../store/dbreturn";
+import { searchTabStateArtist } from "../../store/dbreturn01";
+import { searchTabStateTitle } from "../../store/dbReturn02";
 import { CreateTabButtom } from "../molecules/CreateTabButtom";
 import { userState } from "../../store/userState";
 
 
 export const ListeningMartch: VFC = memo( ()=> {
   const user = useRecoilValue(userState)
-  const tabs = useRecoilValue(searchTabState);
+  
+  const tab02 = useRecoilValue(searchTabStateTitle);
+  const tab01 = useRecoilValue(searchTabStateArtist);
+  const tabs = [...tab01, ...tab02]
   const videoInfo = useRecoilValue(videoState);
   const videoIdex = videoInfo.videoId
   const videoWord = videoInfo.word
@@ -60,7 +64,7 @@ export const ListeningMartch: VFC = memo( ()=> {
         <WrapItem key={tab.id} mx="auto">
           <TabCard
             id={tab.id}
-            imageUrl={thumnail[index]}
+            imageUrl={thumnail[index % 3]}
             writer={tab.writer}
             title={tab.title}
             artist={tab.artist}
@@ -71,7 +75,7 @@ export const ListeningMartch: VFC = memo( ()=> {
       ))}
     </Wrap>
 
-    <TabModal maindata={selectedTab} isOpen={isOpen} onClose={onClose} isEditor={true}/>
+    <TabModal maindata={selectedTab} isOpen={isOpen} onClose={onClose} isEditor={user?.uid === selectedTab?.userId ? true : false}/>
 
     </>
   );

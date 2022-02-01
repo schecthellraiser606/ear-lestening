@@ -2,7 +2,8 @@ import { useCallback, useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { db } from "../../API/firebase/firebase";
 import { useMessage } from "../useMessage";
-import { searchTabState } from "../../store/dbreturn";
+import { searchTabStateArtist } from "../../store/dbreturn01";
+import { searchTabStateTitle } from "../../store/dbReturn02";
 import firebase from 'firebase/compat/app';
 
 type Props ={
@@ -25,21 +26,23 @@ type Props ={
 export const useDbHook = () =>{
   const {showMessage} = useMessage();
   const [loadingStore, setLoadingStore] = useState(false);
-  const setTab = useSetRecoilState(searchTabState);
+  const setTabArtist = useSetRecoilState(searchTabStateArtist);
+  const setTabTitle = useSetRecoilState(searchTabStateTitle);
 
   const createTab = useCallback( async(value: Props)=>{
     setLoadingStore(true);
 
     if(value){
       try{
-        const res = await db.collection("Tab").add(value)
-        showMessage({ title: "Tabを新規作成しました", status: "success"}) 
-        console.log(res)
+        const res = await db.collection("Tab").add(value);
+        showMessage({ title: "Tabを新規作成しました", status: "success"}); 
       }catch(e){
-        showMessage({ title: "Tabの新規作成に失敗しました", status: "error"})
+        showMessage({ title: "Tabの新規作成に失敗しました", status: "error"});
       }finally{
         setLoadingStore(false);
       }
+    }else{
+      showMessage({ title: "入力値にエラーがあります。", status: "error"});
     }
 
   },[showMessage]);
@@ -49,15 +52,40 @@ export const useDbHook = () =>{
 
     db.collection("Tab").orderBy("title").startAt(keyword).endAt(keyword + '\uf8ff').get().then((QuerySnapshot)=>{
       const docs = QuerySnapshot.docs.map(doc => doc.data());
-      setTab(docs)
+      setTabTitle(docs)
     }).catch(()=>{
-      showMessage({ title: "Tabの検索に失敗しました", status: "warning"})
-    }).finally(()=>{
-      setLoadingStore(false)
+      showMessage({ title: "Tabの検索に失敗しました", status: "warning"});
     })
-  },[showMessage, setTab])
+
+    db.collection("Tab").orderBy("artist").startAt(keyword).endAt(keyword + '\uf8ff').get().then((QuerySnapshot)=>{
+      const docs = QuerySnapshot.docs.map(doc => doc.data());
+      setTabArtist(docs)
+    }).catch(()=>{
+      showMessage({ title: "Tabの検索に失敗しました", status: "warning"});
+    }).finally(()=>{
+      setLoadingStore(false);
+    })
+    
+  },[showMessage, setTabArtist, setTabTitle])
+
+
+  const updateDb = useCallback( async(id: string, value: Props)=>{
+    setLoadingStore(true);
+    if(value && id){
+      try{
+        await db.collection("Tab").doc(id).update(value);
+        showMessage({ title: "Tabを更新しました", status: "success"});  
+      }catch(e){
+        showMessage({ title: "Tabの更新に失敗しました", status: "error"});
+      }finally{
+        setLoadingStore(false);
+      }
+    }else{
+      showMessage({ title: "入力値にエラーがあります。", status: "error"}); 
+    }
+  },[showMessage])
 
   
 
-  return {loadingStore ,createTab, searchTab}
+  return {loadingStore ,createTab, searchTab, updateDb}
 };
