@@ -1,13 +1,15 @@
-import { Divider, FormControl, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, Textarea } from "@chakra-ui/react";
-import {ChangeEvent, memo, useEffect, useState, VFC} from "react";
+import { Divider, FormControl, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spacer, Stack, Text, Textarea } from "@chakra-ui/react";
+import {ChangeEvent, memo, useEffect, useRef, useState, VFC} from "react";
 import { useMessage } from "../../../hooks/useMessage";
 import { MainTab } from "../../../Types/tab/TabModal";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { VexTabComponent } from "../../molecules/Tab/VextabComponent";
+import {useDbHook } from "../../../hooks/db/dbhooks"
 
 
 import { GoodComponent } from "../../molecules/good";
 import firebase from 'firebase/compat/app';
+import { AlertDialogComp } from "../../molecules/AlertDialog";
 
 type Props = {
   maindata: MainTab | null | firebase.firestore.DocumentData ;
@@ -21,6 +23,7 @@ let today1 = firebase.firestore.Timestamp.now()
 export const TabModal: VFC<Props> = memo( (props)=> {
   const {maindata, isOpen, isEditor = false, onClose} = props;
   const { showMessage } = useMessage();
+  const { loadingStore, updateDb, deleteDb } = useDbHook();
 
   const [writerName, setWriterName] = useState('');
   const [wroteDate, setWroteDate] = useState(today1);
@@ -37,6 +40,14 @@ export const TabModal: VFC<Props> = memo( (props)=> {
   
   const [tabData, setTabData] = useState('');
   const [comment, setComment] = useState('');
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const alertClose = ()=>setAlertOpen(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const deleteHook = ()=>{
+    deleteDb(maindata?.id);
+    alertClose();
+  };
 
   useEffect(() => {
     setWriterName(maindata?.writer ?? '');
@@ -71,7 +82,30 @@ export const TabModal: VFC<Props> = memo( (props)=> {
 
   const photoURL = "https://source.unsplash.com/2LowviVHZ-E";
 
-  const onClickUpdate = () => showMessage({ title: "更新しました", status: "success"});;
+  const onClickUpdate = () => {
+    const value ={
+      writer: writerName,
+      userId: maindata?.userId ?? '',
+      wrotedate: maindata?.wrotedate,
+      updateDate: today1,
+      videoID: maindata?.videoID,
+      copytime: {
+        start:{min:startmin, sec:startsec,},
+        end:{min:endmin, sec:endsec,},
+      },
+      title: title,
+      artist: artist,
+      good: good,
+      tabdata: tabData,
+      comment: comment,
+    }
+
+    updateDb(maindata?.id , value);
+  };
+
+  const onClickDelete = ()=>{};
+
+
   const onClickgood = () =>showMessage({ title: "Goodしたよ", status: "success"});;
 
   return(
@@ -98,9 +132,9 @@ export const TabModal: VFC<Props> = memo( (props)=> {
      <FormControl>作成者</FormControl>
      <Input value={writerName} onChange={onChangeWriterName} isReadOnly={!isEditor} />
      <FormControl>作成日時</FormControl>
-     <Input value={wroteDate.toDate().toDateString()} isReadOnly/>
+     <Input value={wroteDate.toDate().toLocaleDateString()} isReadOnly/>
      <FormControl>更新日時</FormControl>
-     <Input value={updateDate.toDate().toDateString()} onChange={onChangeUpdateDate} isReadOnly/>
+     <Input value={updateDate.toDate().toLocaleDateString()} onChange={onChangeUpdateDate} isReadOnly/>
      
      <FormControl>コピー秒数</FormControl>
      <HStack>
@@ -131,7 +165,13 @@ export const TabModal: VFC<Props> = memo( (props)=> {
 
      {isEditor && (
       <ModalFooter>
-        <PrimaryButton onClick={onClickUpdate}>更新</PrimaryButton>
+        <Stack>
+        <PrimaryButton onClick={onClickUpdate} disable={loadingStore}>更新</PrimaryButton>
+        <Spacer/>
+
+        <PrimaryButton onClick={onClickDelete} disable={loadingStore}>削除</PrimaryButton>
+        <AlertDialogComp isOpen={alertOpen} onClose={alertClose} cancelRef={cancelRef} deleteHook={deleteHook}/>
+        </Stack>
       </ModalFooter>
       ) }
 

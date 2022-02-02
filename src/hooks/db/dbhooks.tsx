@@ -66,14 +66,22 @@ export const useDbHook = () =>{
       setLoadingStore(false);
     })
     
-  },[showMessage, setTabArtist, setTabTitle])
+  },[showMessage, setTabArtist, setTabTitle]);
 
 
   const updateDb = useCallback( async(id: string, value: Props)=>{
     setLoadingStore(true);
     if(value && id){
       try{
-        await db.collection("Tab").doc(id).update(value);
+        await db.collection("Tab").doc(id).update({
+          writer: value.writer,
+          updateDate: value.updateDate,
+          copytime: value.copytime,
+          title: value.title,
+          artist: value.artist,
+          tabdata: value.tabdata,
+          comment: value.comment,
+        });
         showMessage({ title: "Tabを更新しました", status: "success"});  
       }catch(e){
         showMessage({ title: "Tabの更新に失敗しました", status: "error"});
@@ -81,11 +89,30 @@ export const useDbHook = () =>{
         setLoadingStore(false);
       }
     }else{
-      showMessage({ title: "入力値にエラーがあります。", status: "error"}); 
+      showMessage({ title: "入力値にエラーがあります", status: "error"}); 
+      setLoadingStore(false);
     }
-  },[showMessage])
+  },[showMessage]);
+
+
+  const deleteDb = useCallback(async(id: string) =>{
+    setLoadingStore(true);
+    if(id){
+      try{
+        await db.collection("Tab").doc(id).delete();
+        showMessage({ title: "Tabを削除しました", status: "success"}); 
+      }catch(e){
+        showMessage({ title: "Tabの削除に失敗しました", status: "error"});
+      }finally{
+        setLoadingStore(false);
+      }
+    }else{
+      showMessage({ title: "Tabが存在しません、エラーがあります", status: "error"}); 
+      setLoadingStore(false); 
+    }
+  }, [showMessage])
 
   
 
-  return {loadingStore ,createTab, searchTab, updateDb}
+  return {loadingStore ,createTab, searchTab, updateDb, deleteDb}
 };

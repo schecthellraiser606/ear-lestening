@@ -119,9 +119,9 @@ export const CreateTabData: VFC<Props> = memo( (props)=> {
      <FormControl>作成者</FormControl>
      <Input value={writerName} onChange={onChangeWriterName}/>
      <FormControl>作成日時</FormControl>
-     <Input value={wroteDate.toDate().toDateString()} isReadOnly/>
+     <Input value={wroteDate.toDate().toLocaleDateString()} isReadOnly/>
      <FormControl>更新日時</FormControl>
-     <Input value={updateDate.toDate().toDateString()} isReadOnly/>
+     <Input value={updateDate.toDate().toLocaleDateString()} isReadOnly/>
      
      <FormControl>コピー秒数</FormControl>
      <HStack>
