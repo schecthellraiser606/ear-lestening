@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, InputRightElement } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Input, InputRightElement, Text } from "@chakra-ui/react";
 import {ChangeEvent, memo, VFC} from "react";
 
 type Props = {
@@ -15,6 +15,7 @@ export const InputPassword: VFC<Props> = memo( (prop)=> {
   return(
     <FormControl isInvalid={isErrorPass} isRequired>
     <FormLabel htmlFor='email'>Password</FormLabel>
+    <Text color="orange">※10文字以上の大文字を含む英数字</Text>
       <Input
         id='passId'
         type={show ? 'text' : 'password'}

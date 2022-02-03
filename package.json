@@ -19,6 +19,7 @@
     "@types/recoil": "^0.0.9",
     "@types/styled-components": "^5.1.19",
     "axios": "^0.24.0",
+    "email-validator": "^2.0.4",
     "firebase": "^9.6.1",
     "helmet": "^5.0.1",
     "react": "^17.0.2",

@@ -1,5 +1,6 @@
 import { Box, Divider, Flex, Heading, Stack } from "@chakra-ui/react";
 import {ChangeEvent, memo, useState, VFC} from "react";
+import { validate } from 'email-validator';
 import { useAuthHook } from "../../../hooks/user/useAuthHook";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { InputEmail } from "../../atoms/Input/EmailInput";
@@ -12,8 +13,8 @@ export const UserCreate: VFC = memo( ()=> {
   const [show, setShow] = useState(false);
   const {userSignUp, loading} = useAuthHook();
 
-  const isErrorEmail = inputEmail === '';
-  const isErrorPass = inputPass === '';
+  const isErrorEmail = !validate(inputEmail);
+  const isErrorPass = inputPass.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{10,}$/) ? false : true;
 
   const handleInputEmailChange = (e:ChangeEvent<HTMLInputElement>) => setInputEmail(e.target.value);
   const handleInputPassChange = (e: ChangeEvent<HTMLInputElement>) => setPass(e.target.value);
@@ -37,7 +38,7 @@ export const UserCreate: VFC = memo( ()=> {
     <PrimaryButton 
         onClick={onClickCreate}
         loading={loading}
-        disable={inputEmail === "" || inputPass ===""} >
+        disable={isErrorEmail || isErrorPass} >
         ユーザを作成
       </PrimaryButton>
     </Stack>
