@@ -4,11 +4,18 @@ import { getAuth } from "firebase/auth";
 import { TopLayout } from "../../organisms/layout/TopLayout";
 import { useAuthHook } from "../../../hooks/user/useAuthHook";
 import { SecondaryButton } from "../../atoms/buttons/SecondaryButton";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { useHistory } from "react-router-dom";
+import { useDbHook } from "../../../hooks/db/dbhooks";
 
 export const UserSetting: VFC = memo( ()=> {
   const auth = getAuth();
   const signInUser = auth.currentUser;
   const {loading, userUpdateName, userUpdateEmail, userSignOut } = useAuthHook();
+
+  const history = useHistory();
+
+  const { searchUserTab, loadingStore} = useDbHook();
 
   const [name, setName] = useState( signInUser?.displayName ?? "");
   const [email, setEmail] = useState(signInUser?.email ?? "");
@@ -19,6 +26,14 @@ export const UserSetting: VFC = memo( ()=> {
   const onClickUpdateName = () => userUpdateName(name);
   const onClickUpdatteEmail = () => userUpdateEmail(email); 
   const onClickLogout = () => userSignOut();
+
+  const onClickUserTab = () =>{
+    try{
+      searchUserTab(signInUser?.uid);
+    }finally{
+      history.push('/user_setting/Tabs')
+    }
+  }
 
 
   return(
@@ -52,7 +67,17 @@ export const UserSetting: VFC = memo( ()=> {
         </InputRightElement>
         </FormControl>
       </Stack>
-      <Divider my={5}/>
+      <Divider my={4}/>
+
+      <Button 
+        rightIcon={<ArrowForwardIcon />} 
+        colorScheme='cyan' 
+        variant='outline'
+        onClick={onClickUserTab}>
+          My Tab 一覧へ
+      </Button>
+
+      <Divider my={6}/>
 
       <Box textAlign="right">
       <SecondaryButton disable={false} loading={loading} onClick={onClickLogout}>

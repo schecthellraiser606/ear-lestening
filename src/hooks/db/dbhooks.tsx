@@ -5,6 +5,7 @@ import { useMessage } from "../useMessage";
 import { searchTabStateArtist } from "../../store/dbreturn01";
 import { searchTabStateTitle } from "../../store/dbReturn02";
 import firebase from 'firebase/compat/app';
+import { searchUserAllTabState } from "../../store/dbUserTab";
 
 type Props ={
   writer: string;
@@ -28,6 +29,7 @@ export const useDbHook = () =>{
   const [loadingStore, setLoadingStore] = useState(false);
   const setTabArtist = useSetRecoilState(searchTabStateArtist);
   const setTabTitle = useSetRecoilState(searchTabStateTitle);
+  const setUserAllTabSte = useSetRecoilState(searchUserAllTabState);
 
   const createTab = useCallback( async(value: Props)=>{
     setLoadingStore(true);
@@ -67,6 +69,25 @@ export const useDbHook = () =>{
     })
     
   },[showMessage, setTabArtist, setTabTitle]);
+
+  const searchUserTab = useCallback((writer: string | undefined) =>{
+    setLoadingStore(true);
+
+    if(writer){
+      db.collection("Tab").orderBy("writer").startAt(writer).endAt(writer).get().then((QuerySnapshot)=>{
+        const docs = QuerySnapshot.docs.map(doc => doc.data());
+        setUserAllTabSte(docs)
+      }).catch(()=>{
+        showMessage({ title: "Tabの検索に失敗しました", status: "warning"});
+      }).finally(()=>{
+        setLoadingStore(false);
+      })
+    }else{
+      showMessage({ title: "ログインしてください", status: "error"}); 
+      setLoadingStore(false); 
+    }
+
+  },[showMessage, setUserAllTabSte]);
 
 
   const updateDb = useCallback( async(id: string, value: Props)=>{
@@ -114,5 +135,5 @@ export const useDbHook = () =>{
 
   
 
-  return {loadingStore ,createTab, searchTab, updateDb, deleteDb}
+  return {loadingStore ,createTab, searchTab, updateDb, deleteDb, searchUserTab}
 };
