@@ -36,7 +36,12 @@ export const useDbHook = () =>{
 
     if(value){
       try{
-        const res = await db.collection("Tab").add(value);
+        const res = db.collection("Tab");
+        const docId = res.doc().id;
+        await res.add(value);
+        await res.doc(docId).collection("Like").doc(docId).set({
+          id: []
+        });
         showMessage({ title: "Tabを新規作成しました", status: "success"}); 
       }catch(e){
         showMessage({ title: "Tabの新規作成に失敗しました", status: "error"});
@@ -70,11 +75,11 @@ export const useDbHook = () =>{
     
   },[showMessage, setTabArtist, setTabTitle]);
 
-  const searchUserTab = useCallback((writer: string | undefined) =>{
+  const searchUserTab = useCallback((userID: string | undefined) =>{
     setLoadingStore(true);
 
-    if(writer){
-      db.collection("Tab").orderBy("writer").startAt(writer).endAt(writer).get().then((QuerySnapshot)=>{
+    if(userID){
+      db.collection("Tab").where('userId', '==', userID).get().then((QuerySnapshot)=>{
         const docs = QuerySnapshot.docs.map(doc => doc.data());
         setUserAllTabSte(docs)
       }).catch(()=>{
