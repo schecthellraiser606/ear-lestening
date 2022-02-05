@@ -76,6 +76,7 @@ export const CreateTabData: VFC<Props> = memo( (props)=> {
 
   const onClickCreate = () => {
     const value = {
+      id: "",
       writer: writerName,
       userId: user?.uid ?? '',
       wrotedate: firebase.firestore.Timestamp.now(),

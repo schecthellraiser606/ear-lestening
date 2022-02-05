@@ -1,6 +1,6 @@
 import { Box, Divider, Image, Stack, Text } from "@chakra-ui/react";
 import {memo, VFC} from "react";
-import { GoodComponent } from "../../molecules/good";
+import { GoodSubComponent } from "../../molecules/goodSub";
 
 
 type Props ={
@@ -42,7 +42,7 @@ export const TabCard: VFC<Props> = memo( (props)=> {
       <Text fontSize="sm" color="gray">アーティスト名:{artist}</Text>
 
       <Divider my={4}/>
-      <GoodComponent good={good}/>
+      <GoodSubComponent good={good}/>
     </Stack>
 
     </Box>

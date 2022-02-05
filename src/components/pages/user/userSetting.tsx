@@ -7,11 +7,13 @@ import { SecondaryButton } from "../../atoms/buttons/SecondaryButton";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { useHistory } from "react-router-dom";
 import { useDbHook } from "../../../hooks/db/dbhooks";
+import { useGoodDbHook } from "../../../hooks/db/goodDb";
 
 export const UserSetting: VFC = memo( ()=> {
   const auth = getAuth();
   const signInUser = auth.currentUser;
   const {loading, userUpdateName, userUpdateEmail, userSignOut } = useAuthHook();
+  const {loadingGoodStore,searchUserId} = useGoodDbHook();
 
   const history = useHistory();
 
@@ -30,6 +32,7 @@ export const UserSetting: VFC = memo( ()=> {
   const onClickUserTab = () =>{
     try{
       searchUserTab(signInUser?.uid);
+      searchUserId(signInUser?.uid);
     }finally{
       history.push('/user_setting/Tabs')
     }
@@ -73,6 +76,7 @@ export const UserSetting: VFC = memo( ()=> {
         rightIcon={<ArrowForwardIcon />} 
         colorScheme='cyan' 
         variant='outline'
+        isLoading={loadingStore || loadingGoodStore}
         onClick={onClickUserTab}>
           My Tab 一覧へ
       </Button>

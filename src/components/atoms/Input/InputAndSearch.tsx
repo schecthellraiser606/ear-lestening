@@ -5,11 +5,16 @@ import { SearchButton } from "../buttons/SearchButtom";
 import {useMovieSearch} from "../../../hooks/movieSearch"
 import { useDbHook } from "../../../hooks/db/dbhooks";
 import { useHistory } from "react-router-dom";
+import { useGoodDbHook } from "../../../hooks/db/goodDb";
+import { userState } from "../../../store/userState";
+import { useRecoilValue } from "recoil";
 
 export const InputAndSearch: VFC = memo( ()=> {
   const {search, loading} = useMovieSearch();
   const { searchTab, loadingStore} = useDbHook();
   const [word, setWord] = useState("");
+  const user = useRecoilValue(userState)
+  const {loadingGoodStore,searchUserId} = useGoodDbHook();
 
   const history = useHistory();
 
@@ -19,6 +24,7 @@ export const InputAndSearch: VFC = memo( ()=> {
     try{
     search({words:word})
     searchTab(word)
+    searchUserId(user?.uid);
     }finally{
     history.push('/search_result')
     }
@@ -45,7 +51,7 @@ export const InputAndSearch: VFC = memo( ()=> {
       <Box>
       <SearchButton 
         onClick={onClickSerch}
-        loading={loading || loadingStore}
+        loading={loading || loadingStore || loadingGoodStore}
         disable={word===""} 
         >検索</SearchButton>
       </Box>

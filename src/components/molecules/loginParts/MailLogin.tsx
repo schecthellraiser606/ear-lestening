@@ -7,9 +7,6 @@ import { useAuthHook } from "../../../hooks/user/useAuthHook";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { InputEmail } from "../../atoms/Input/EmailInput";
 import { InputPassword } from "../../atoms/Input/PasswordInput";
-import { useGoodDbHook } from "../../../hooks/db/goodDb";
-import { useRecoilValue } from "recoil";
-import { userState } from "../../../store/userState";
 
 export const MailLogin: VFC = memo( ()=> {
   const history = useHistory();
@@ -18,8 +15,6 @@ export const MailLogin: VFC = memo( ()=> {
   const [inputPass, setPass] = useState('');
   const [show, setShow] = useState(false);
   const {userSignIn, loading} = useAuthHook();
-  const {searchUserId, loadingGoodStore} = useGoodDbHook();
-  const user = useRecoilValue(userState);
 
   const isErrorEmail = !validate(inputEmail);
   const isErrorPass = inputPass.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{10,}$/) ? false : true;
@@ -31,16 +26,15 @@ export const MailLogin: VFC = memo( ()=> {
   const onClickLogin = async() =>{ 
     try{
       userSignIn(inputEmail, inputPass) ;
-      searchUserId(user?.uid);
     }finally{
-      history.push('/')
+      history.push('/');
     }
   }
   const onClickCreateUser = () => history.push('/account_create')
 
 
   return(
-    <Box bg="white" padding={6} h={400}>
+    <Box bg="white" padding={6} h={430}>
     <Heading fontSize="2xl">Emailログイン</Heading>
     <Divider my={4}/>
     <Stack p={2}>
@@ -51,7 +45,7 @@ export const MailLogin: VFC = memo( ()=> {
 
     <PrimaryButton 
         onClick={onClickLogin}
-        loading={loading || loadingGoodStore}
+        loading={loading}
         disable={isErrorEmail || isErrorPass} >
         ログイン
     </PrimaryButton>

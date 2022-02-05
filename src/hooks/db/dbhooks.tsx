@@ -8,6 +8,7 @@ import firebase from 'firebase/compat/app';
 import { searchUserAllTabState } from "../../store/dbUserTab";
 
 type Props ={
+  id: string;
   writer: string;
   userId: string;
   wrotedate: firebase.firestore.Timestamp;
@@ -38,9 +39,11 @@ export const useDbHook = () =>{
       try{
         const res = db.collection("Tab");
         const docId = res.doc().id;
-        await res.add(value);
-        await res.doc(docId).collection("Like").doc(docId).set({
-          id: []
+        value.id = docId;
+        await res.doc(docId).set(value).then(()=>{
+           res.doc(docId).collection("Like").doc(docId).set({
+            Ids: []
+          })
         });
         showMessage({ title: "Tabを新規作成しました", status: "success"}); 
       }catch(e){

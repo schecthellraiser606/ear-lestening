@@ -1,6 +1,5 @@
-import { Divider, FormControl, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spacer, Stack, Text, Textarea } from "@chakra-ui/react";
+import { Divider, FormControl, Grid, GridItem, HStack, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spacer, Stack, Text, Textarea } from "@chakra-ui/react";
 import {ChangeEvent, memo, useEffect, useRef, useState, VFC} from "react";
-import { useMessage } from "../../../hooks/useMessage";
 import { MainTab } from "../../../Types/tab/TabModal";
 import { PrimaryButton } from "../../atoms/buttons/PrimaryButtom";
 import { VexTabComponent } from "../../molecules/Tab/VextabComponent";
@@ -12,9 +11,9 @@ import firebase from 'firebase/compat/app';
 import { AlertDialogComp } from "../../molecules/AlertDialog";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { searchGoodAllTabState } from "../../../store/goodDbIds";
-import { userInfo } from "os";
 import { userState } from "../../../store/userState";
 import { useGoodDbHook } from "../../../hooks/db/goodDb";
+import { useMessage } from "../../../hooks/useMessage";
 
 type Props = {
   maindata: MainTab | null | firebase.firestore.DocumentData ;
@@ -29,6 +28,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
   const {maindata, isOpen, isEditor = false, onClose} = props;
   const { loadingStore, updateDb, deleteDb } = useDbHook();
   const {addGood, removeGood, loadingGoodStore} = useGoodDbHook();
+  const {showMessage} = useMessage();
 
   const [goodArray, setGoodArray] = useRecoilState(searchGoodAllTabState);
   const SigninUser = useRecoilValue(userState);
@@ -92,6 +92,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
 
   const onClickUpdate = () => {
     const value ={
+      id: maindata?.id,
       writer: writerName,
       userId: maindata?.userId ?? '',
       wrotedate: maindata?.wrotedate,
@@ -111,21 +112,25 @@ export const TabModal: VFC<Props> = memo( (props)=> {
     updateDb(maindata?.id , value);
   };
 
-  const onClickDelete = ()=>{};
+  const onClickDelete = ()=>deleteDb(maindata?.id);
 
   const isgood = goodArray.includes(maindata?.id);
 
 
   const onClickgood = () =>{
-    if(isgood){
-      removeGood(maindata?.id, SigninUser?.uid);
-      setGood(good-1);
-      setGoodArray([...goodArray,maindata?.id])
-    }else{
-      addGood(maindata?.id, SigninUser?.uid);
-      setGood(good+1);
-      const index = goodArray.indexOf(maindata?.id);
-      setGoodArray(goodArray.splice(index,1));
+    try{
+      if(isgood){
+        removeGood(maindata?.id, SigninUser?.uid);
+        setGood(good-1);
+        setGoodArray([...goodArray,maindata?.id])
+      }else{
+        addGood(maindata?.id, SigninUser?.uid);
+        setGood(good+1);
+        const index = goodArray.indexOf(maindata?.id);
+        setGoodArray(goodArray.splice(index,1));
+      }
+    }catch(e){
+      showMessage({ title: "現在「いいね」できません", status: "error"});
     }
   }
 
@@ -178,7 +183,11 @@ export const TabModal: VFC<Props> = memo( (props)=> {
      <Textarea value={comment} onChange={onChangeComment}  />
 
      <Divider my={4}/>
-     <GoodComponent good={good} onClick={onClickgood} disable={SigninUser?.uid ? true: false} status={isgood}/>
+     <Grid templateColumns='repeat(5, 1fr)' gap={3}>
+       <GridItem colSpan={3}>
+        < GoodComponent good={good} onClick={onClickgood} disable={ (SigninUser?.uid && !loadingGoodStore) ?  false : true} status={isgood}/>
+      </GridItem>
+     </Grid>
      <Divider my={4}/>
     
      </Stack>

@@ -30,6 +30,7 @@ export const useGoodDbHook = () =>{
       }
     }else{
       showMessage({ title: "入力値にエラーがあります。", status: "error"});
+      setLoadingGoodStore(false);
     }
 
   },[showMessage]);
@@ -54,6 +55,7 @@ export const useGoodDbHook = () =>{
       }
     }else{
       showMessage({ title: "入力値にエラーがあります。", status: "error"});
+      setLoadingGoodStore(false);
     }
 
   },[showMessage]);
@@ -64,7 +66,7 @@ export const useGoodDbHook = () =>{
     if(userId){
       try{
         await db.collectionGroup("Like").where("Ids", "array-contains", userId).get().then((QuerySnapshot)=>{
-          const docs = QuerySnapshot.docs.map(doc => doc.data().id);
+          const docs = QuerySnapshot.docs.map(doc => doc.id);
           setGoodState(docs);
         })
       }catch(e){
@@ -73,10 +75,10 @@ export const useGoodDbHook = () =>{
         setLoadingGoodStore(false);
       }
     }else{
-      showMessage({ title: "入力値にエラーがあります。", status: "error"});
+      setLoadingGoodStore(false);
     }
 
-  }, [showMessage])
+  }, [showMessage, setGoodState])
   
 
   return {loadingGoodStore, addGood, removeGood, searchUserId};
