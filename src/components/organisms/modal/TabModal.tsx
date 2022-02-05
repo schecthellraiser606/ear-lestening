@@ -10,6 +10,11 @@ import {useDbHook } from "../../../hooks/db/dbhooks"
 import { GoodComponent } from "../../molecules/good";
 import firebase from 'firebase/compat/app';
 import { AlertDialogComp } from "../../molecules/AlertDialog";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { searchGoodAllTabState } from "../../../store/goodDbIds";
+import { userInfo } from "os";
+import { userState } from "../../../store/userState";
+import { useGoodDbHook } from "../../../hooks/db/goodDb";
 
 type Props = {
   maindata: MainTab | null | firebase.firestore.DocumentData ;
@@ -22,8 +27,11 @@ let today1 = firebase.firestore.Timestamp.now()
 
 export const TabModal: VFC<Props> = memo( (props)=> {
   const {maindata, isOpen, isEditor = false, onClose} = props;
-  const { showMessage } = useMessage();
   const { loadingStore, updateDb, deleteDb } = useDbHook();
+  const {addGood, removeGood, loadingGoodStore} = useGoodDbHook();
+
+  const [goodArray, setGoodArray] = useRecoilState(searchGoodAllTabState);
+  const SigninUser = useRecoilValue(userState);
 
   const [writerName, setWriterName] = useState('');
   const [wroteDate, setWroteDate] = useState(today1);
@@ -105,8 +113,21 @@ export const TabModal: VFC<Props> = memo( (props)=> {
 
   const onClickDelete = ()=>{};
 
+  const isgood = goodArray.includes(maindata?.id);
 
-  const onClickgood = () =>showMessage({ title: "Goodしたよ", status: "success"});;
+
+  const onClickgood = () =>{
+    if(isgood){
+      removeGood(maindata?.id, SigninUser?.uid);
+      setGood(good-1);
+      setGoodArray([...goodArray,maindata?.id])
+    }else{
+      addGood(maindata?.id, SigninUser?.uid);
+      setGood(good+1);
+      const index = goodArray.indexOf(maindata?.id);
+      setGoodArray(goodArray.splice(index,1));
+    }
+  }
 
   return(
     <Modal 
@@ -157,7 +178,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
      <Textarea value={comment} onChange={onChangeComment}  />
 
      <Divider my={4}/>
-     <GoodComponent good={good} onClick={onClickgood}/>
+     <GoodComponent good={good} onClick={onClickgood} disable={SigninUser?.uid ? true: false} status={isgood}/>
      <Divider my={4}/>
     
      </Stack>

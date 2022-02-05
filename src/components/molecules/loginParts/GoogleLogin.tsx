@@ -1,12 +1,26 @@
 import { Alert, AlertIcon, Box, Button, Divider, Heading} from "@chakra-ui/react";
 import {memo, VFC} from "react";
 import { FcGoogle } from "react-icons/fc";
+import { useHistory } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { useGoodDbHook } from "../../../hooks/db/goodDb";
 import { useAuthHook } from "../../../hooks/user/useAuthHook";
+import { userState } from "../../../store/userState";
 
 export const GoogleLogin: VFC = memo( ()=> {
+  const history = useHistory();
   const {userGoogleAuth, loading} = useAuthHook();
+  const {searchUserId, loadingGoodStore} = useGoodDbHook();
+  const user = useRecoilValue(userState);
 
-  const onClick = () => userGoogleAuth();
+  const onClick = () => {
+    try{
+      userGoogleAuth();
+      searchUserId(user?.uid);
+    }finally{
+      history.push('/');
+    }
+  }
   return(
     <Box bg="white" padding={6} h={400}>
       <Heading fontSize="2xl">Googleアカウントでログイン</Heading>
@@ -21,7 +35,7 @@ export const GoogleLogin: VFC = memo( ()=> {
       shadow="md"
       _hover={{ opacity: 0.8}} 
       disabled= {loading}
-      isLoading = {loading}
+      isLoading = {loading || loadingGoodStore}
       onClick={onClick} >
         Googleログイン
       </Button>

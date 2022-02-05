@@ -24,9 +24,8 @@ export const useAuthHook = ()=> {
         showMessage({ title: "サインイン認証に失敗しました", status: "error"})
       } finally{
         setLoading(false);
-        history.push('/');
       }
-    },[history, showMessage, setUser]);
+    },[showMessage, setUser]);
 
   //登録
   const userSignUp = useCallback(
@@ -65,9 +64,8 @@ export const useAuthHook = ()=> {
         showMessage({ title: "Googleアカウントでのサインインに失敗しました", status: "error"})
       }finally{
         setLoading(false);
-        history.push('/');
       } 
-    },[history, showMessage])
+    },[showMessage])
 
 
   const userUpdateName = useCallback(
@@ -99,7 +97,7 @@ export const useAuthHook = ()=> {
           .catch((error)=>showMessage({ title: "変更できませんでした", status: "error"}))
           .finally(()=>{setLoading(false)})
         }else{
-          showMessage({ title: "変更できませんでした。", status: "error"})
+          showMessage({ title: "変更できませんでした。", status: "error"});
           history.push('/');
         }
       },

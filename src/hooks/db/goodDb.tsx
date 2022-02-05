@@ -2,19 +2,22 @@ import { useCallback, useState } from "react";
 import { db } from "../../API/firebase/firebase";
 import { useMessage } from "../useMessage";
 import firebase from 'firebase/compat/app';
+import { useSetRecoilState } from "recoil";
+import { searchGoodAllTabState } from "../../store/goodDbIds";
 
 
 export const useGoodDbHook = () =>{
   const {showMessage} = useMessage();
   const [loadingGoodStore, setLoadingGoodStore] = useState(false);
+  const setGoodState = useSetRecoilState(searchGoodAllTabState);
 
-  const addGood = useCallback( async(docId: string, userId: string)=>{
+  const addGood = useCallback( async(docId: string, userId: string | undefined)=>{
     setLoadingGoodStore(true);
 
-    if(docId){
+    if(docId && userId){
       try{
         await db.collection("Tab").doc(docId).collection("Like").doc(docId).update({
-          id: firebase.firestore.FieldValue.arrayUnion(userId)
+          Ids: firebase.firestore.FieldValue.arrayUnion(userId)
         })
         await db.collection("Tab").doc(docId).update({
           good: firebase.firestore.FieldValue.increment(1)
@@ -32,13 +35,13 @@ export const useGoodDbHook = () =>{
   },[showMessage]);
 
 
-  const removeGood = useCallback( async(docId: string, userId: string)=>{
+  const removeGood = useCallback( async(docId: string, userId: string | undefined)=>{
     setLoadingGoodStore(true);
 
-    if(docId){
+    if(docId && userId){
       try{
         await db.collection("Tab").doc(docId).collection("Like").doc(docId).update({
-          id: firebase.firestore.FieldValue.arrayRemove(userId)
+          Ids: firebase.firestore.FieldValue.arrayRemove(userId)
         })
         await db.collection("Tab").doc(docId).update({
           good: firebase.firestore.FieldValue.increment(-1)
@@ -54,7 +57,27 @@ export const useGoodDbHook = () =>{
     }
 
   },[showMessage]);
+
+  const searchUserId = useCallback(async(userId: string | undefined)=>{
+    setLoadingGoodStore(true);
+
+    if(userId){
+      try{
+        await db.collectionGroup("Like").where("Ids", "array-contains", userId).get().then((QuerySnapshot)=>{
+          const docs = QuerySnapshot.docs.map(doc => doc.data().id);
+          setGoodState(docs);
+        })
+      }catch(e){
+        showMessage({ title: "「いいね」されているTabを取得できませんでした", status: "info"});
+      }finally{
+        setLoadingGoodStore(false);
+      }
+    }else{
+      showMessage({ title: "入力値にエラーがあります。", status: "error"});
+    }
+
+  }, [showMessage])
   
 
-  return {loadingGoodStore, addGood, removeGood};
+  return {loadingGoodStore, addGood, removeGood, searchUserId};
 };

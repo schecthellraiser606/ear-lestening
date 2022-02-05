@@ -1,31 +1,24 @@
-import { Grid, GridItem, IconButton, Text } from "@chakra-ui/react";
 import {memo, VFC} from "react";
-import { BsHandThumbsUp } from "react-icons/bs";
+import styled from "styled-components";
 
 type Prop ={
   good: number;
   onClick?: ()=>void ;
+  status: boolean;
+  disable: boolean;
 }
 
 export const GoodComponent: VFC<Prop>= memo( (prop)=> {
-  const {good, onClick} = prop
+  const {good, onClick, status = false, disable = true} = prop
+
+  const LikeButton = styled.button`
+    background-color: ${status? `#FF99CC`: `#FF3333`};
+    color: white;
+    padding: 0.8rem;
+    border-radius: 0.4rem;
+    cursor: pointer;`
+
   return(
-    <Grid 
-    templateColumns='repeat(5, 1fr)'>
-      <GridItem colSpan={3} textAlign="left">
-      <Text fontSize="xl" marginTop="1.5" marginLeft="1">いいね</Text>
-      </GridItem>
-      <GridItem m="auto">
-      <IconButton
-        colorScheme='blue'
-        aria-label='good'
-        onClick={onClick ?? undefined}
-        boxShadow="md"
-        icon={<BsHandThumbsUp />}/>
-      </GridItem>
-      <GridItem colSpan={1} >
-      <Text marginTop="1.5" fontSize="xl">: {good}</Text>
-      </GridItem>
-     </Grid>
+   <LikeButton onClick={onClick} disabled={disable}>♥ {good}</LikeButton>
   );
 });
