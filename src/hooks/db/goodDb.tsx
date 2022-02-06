@@ -3,13 +3,13 @@ import { db } from "../../API/firebase/firebase";
 import { useMessage } from "../useMessage";
 import firebase from 'firebase/compat/app';
 import { useSetRecoilState } from "recoil";
-import { searchGoodAllTabState } from "../../store/goodDbIds";
+import { goodUserState } from "../../store/goodState";
 
 
 export const useGoodDbHook = () =>{
   const {showMessage} = useMessage();
   const [loadingGoodStore, setLoadingGoodStore] = useState(false);
-  const setGoodState = useSetRecoilState(searchGoodAllTabState);
+  const setGoodState = useSetRecoilState(goodUserState);
 
   const addGood = useCallback( async(docId: string, userId: string | undefined)=>{
     setLoadingGoodStore(true);
@@ -60,22 +60,23 @@ export const useGoodDbHook = () =>{
 
   },[showMessage]);
 
-  const searchUserId = useCallback(async(userId: string | undefined)=>{
+  const searchUserId = useCallback( (userId: string | undefined, docId: string)=>{
     setLoadingGoodStore(true);
+    let isgoodState = false;
 
-    if(userId){
-      try{
-        await db.collectionGroup("Like").where("Ids", "array-contains", userId).get().then((QuerySnapshot)=>{
-          const docs = QuerySnapshot.docs.map(doc => doc.id);
-          setGoodState(docs);
+    if(userId && docId){
+        db.collection("Tab").doc(docId).collection("Like").doc(docId).get().then((QuerySnapshot)=>{
+          const doc = QuerySnapshot.data()
+          isgoodState = doc?.Ids.includes(userId);
+        }).catch((e)=>{
+          showMessage({ title: "「いいね」したTabが見つかりません", status: "info"});
+        }).finally(() =>{ 
+          setLoadingGoodStore(false)
+          setGoodState(isgoodState)
         })
-      }catch(e){
-        showMessage({ title: "「いいね」されているTabを取得できませんでした", status: "info"});
-      }finally{
-        setLoadingGoodStore(false);
-      }
     }else{
       setLoadingGoodStore(false);
+      setGoodState(isgoodState)
     }
 
   }, [showMessage, setGoodState])

@@ -10,10 +10,11 @@ import { GoodComponent } from "../../molecules/good";
 import firebase from 'firebase/compat/app';
 import { AlertDialogComp } from "../../molecules/AlertDialog";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { searchGoodAllTabState } from "../../../store/goodDbIds";
+
 import { userState } from "../../../store/userState";
 import { useGoodDbHook } from "../../../hooks/db/goodDb";
 import { useMessage } from "../../../hooks/useMessage";
+import { goodUserState } from "../../../store/goodState";
 
 type Props = {
   maindata: MainTab | null | firebase.firestore.DocumentData ;
@@ -30,8 +31,8 @@ export const TabModal: VFC<Props> = memo( (props)=> {
   const {addGood, removeGood, loadingGoodStore} = useGoodDbHook();
   const {showMessage} = useMessage();
 
-  const [goodArray, setGoodArray] = useRecoilState(searchGoodAllTabState);
   const SigninUser = useRecoilValue(userState);
+  const [isgoodState, setIsGoodState] = useRecoilState(goodUserState);
 
   const [writerName, setWriterName] = useState('');
   const [wroteDate, setWroteDate] = useState(today1);
@@ -57,6 +58,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
     alertClose();
   };
 
+
   useEffect(() => {
     setWriterName(maindata?.writer ?? '');
     setWroteDate(maindata?.wrotedate ?? today1);
@@ -71,7 +73,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
     setTabData(maindata?.tabdata ?? '');
     setComment(maindata?.comment ?? '');
     
-  }, [maindata])
+  }, [maindata, SigninUser?.uid])
 
   const onChangeWriterName = (e: ChangeEvent<HTMLInputElement>) => setWriterName(e.target.value);
   const onChangeUpdateDate = () =>{
@@ -114,25 +116,22 @@ export const TabModal: VFC<Props> = memo( (props)=> {
 
   const onClickDelete = ()=>deleteDb(maindata?.id);
 
-  const isgood = goodArray.includes(maindata?.id);
-
 
   const onClickgood = () =>{
     try{
-      if(isgood){
+      if(isgoodState){
         removeGood(maindata?.id, SigninUser?.uid);
         setGood(good-1);
-        setGoodArray([...goodArray,maindata?.id])
       }else{
         addGood(maindata?.id, SigninUser?.uid);
         setGood(good+1);
-        const index = goodArray.indexOf(maindata?.id);
-        setGoodArray(goodArray.splice(index,1));
       }
+      setIsGoodState(!isgoodState);
     }catch(e){
       showMessage({ title: "現在「いいね」できません", status: "error"});
     }
   }
+
 
   return(
     <Modal 
@@ -185,7 +184,7 @@ export const TabModal: VFC<Props> = memo( (props)=> {
      <Divider my={4}/>
      <Grid templateColumns='repeat(5, 1fr)' gap={3}>
        <GridItem colSpan={3}>
-        < GoodComponent good={good} onClick={onClickgood} disable={ (SigninUser?.uid && !loadingGoodStore) ?  false : true} status={isgood}/>
+        < GoodComponent good={good} onClick={onClickgood} disable={ (SigninUser?.uid && !loadingGoodStore) ?  false : true} status={isgoodState}/>
       </GridItem>
      </Grid>
      <Divider my={4}/>

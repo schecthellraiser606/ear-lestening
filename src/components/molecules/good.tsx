@@ -4,14 +4,14 @@ import {memo, VFC} from "react";
 type Prop ={
   good: number;
   onClick?: ()=>void ;
-  status: boolean;
+  status: boolean | undefined;
   disable: boolean;
 }
 
 export const GoodComponent: VFC<Prop>= memo( (prop)=> {
-  const {good, onClick, status = false, disable = true} = prop
+  const {good, onClick, status, disable = true} = prop
 
   return(
-   <Button onClick={onClick} disabled={disable} color="white" backgroundColor={status? `#FF99CC`: `#FF3333`}>♥ {good}</Button>
+   <Button onClick={onClick} disabled={disable} color="white" backgroundColor={status? `#FF3333`: `#FF99CC`}>♥ {good}</Button>
   );
 });
