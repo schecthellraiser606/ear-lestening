@@ -17,6 +17,7 @@ export const MoviePlayer: VFC<Props> = memo( (prop)=> {
       src={"https://www.youtube.com/embed/" + videoId} 
       frameBorder="0"
       allowFullScreen
+      title={videoId}
     />
     </Box>
   );

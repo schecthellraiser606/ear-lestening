@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { useRecoilState } from "recoil"
+import { useSetRecoilState } from "recoil"
 import { videoState } from "../store/videoState"
 import { YoutubeApi } from "../API/YouTubeAPI/apiv3Youtube"
 import { youtube } from "../Types/Youtube/youtubeapi"
@@ -19,7 +19,7 @@ type param = {
 }
 
 export const useMovieSearch = () =>{
-  const [videoInfo, setVideoInfo] = useRecoilState(videoState);
+  const setVideoInfo = useSetRecoilState(videoState);
 
   const [loading, setLoading] = useState(false);
   const {showMessage} = useMessage();
@@ -72,7 +72,7 @@ export const useMovieSearch = () =>{
         .finally(()=>{
           setLoading(false);
         });
-    }, [setVideoInfo, showMessage, videoInfo.thumnailsURL]);
+    }, [setVideoInfo, showMessage]);
 
     return{ search, loading };
 };
