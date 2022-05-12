@@ -16,7 +16,7 @@
   + Lang: JavaScript/TypeScript
   + FW: React.js
   + UI library: Chakra UI
-  + other: email-validater, etc...
+  + other: email-validater, VexTab, etc...
 + Backend, Infra
   + Firebase
 
