@@ -6,7 +6,7 @@
     "@chakra-ui/icons": "^1.1.7",
     "@chakra-ui/react": "^1.8.9",
     "@react-icons/all-files": "^4.1.0",
-    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/etag": "^1.8.1",
